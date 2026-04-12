@@ -52,6 +52,20 @@ export { handle } from "@kiiimatz/fontrum/hooks";
 }
 ```
 
+**3: 1. Use your font in CSS**
+
+```css
+.inter {
+  font-family: "inter", sans-serif;
+}
+```
+
+**3: 2. Use your font in TailwindCSS**
+
+```html
+<p class="inter">Hello World!</p>
+```
+
 That's it. No `{@html}`, no manual `<style>` tags.
 
 ---
