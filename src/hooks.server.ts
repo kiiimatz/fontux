@@ -1,4 +1,11 @@
-import { getCSS } from "./index.js";
+import { getCSS, getFontPaths } from "./index.js";
+
+const FONT_MIME: Record<string, string> = {
+  woff2: "font/woff2",
+  woff: "font/woff",
+  ttf: "font/ttf",
+  otf: "font/otf",
+};
 
 type MaybePromise<T> = T | Promise<T>;
 
@@ -34,7 +41,19 @@ export const handle: Handle = ({ event, resolve }) => {
     transformPageChunk: ({ html }) => {
       const css = getCSS();
       if (!css) return html;
-      return html.replace("</head>", `<style id="fontrum">${css}</style></head>`);
+
+      const preloads = getFontPaths()
+        .map((path) => {
+          const ext = path.split("?")[0].split(".").pop()?.toLowerCase() ?? "";
+          const type = FONT_MIME[ext];
+          const typeAttr = type ? ` type="${type}"` : "";
+          return `<link rel="preload" href="${path}" as="font"${typeAttr} crossorigin>`;
+        })
+        .join("");
+
+      return html
+        .replace(/(<head[^>]*>)/, `$1${preloads}`)
+        .replace("</head>", `<style id="fontrum">${css}</style></head>`);
     },
   });
 };

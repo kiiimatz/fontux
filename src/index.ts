@@ -74,12 +74,18 @@ function buildCSS(fonts: FontConfig[]): string {
     .join("");
 }
 
-// Module-level CSS store (font configs are static, same for all requests)
+// Module-level stores (font configs are static, same for all requests)
 let _css = "";
+let _fontPaths: string[] = [];
 
 /** @internal Used by hooks.server.ts */
 export function getCSS(): string {
   return _css;
+}
+
+/** @internal Used by hooks.server.ts */
+export function getFontPaths(): string[] {
+  return _fontPaths;
 }
 
 /**
@@ -106,6 +112,9 @@ export function getCSS(): string {
  */
 export function fontrum(fonts: FontConfig[]): void {
   _css = buildCSS(fonts);
+  _fontPaths = fonts.flatMap((cfg) =>
+    Array.isArray(cfg.font) ? cfg.font : [cfg.font]
+  );
 
   if (typeof document !== "undefined") {
     const id = "fontrum";
