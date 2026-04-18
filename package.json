@@ -1,6 +1,6 @@
 {
   "name": "@kiiimatz/fontrum",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "Lightweight font management library for SvelteKit and beyond",
   "type": "module",
   "main": "./dist/index.cjs",
