@@ -24,49 +24,38 @@ npm install @kiiimatz/fontrum
 
 ## Quick Start
 
-**1. Call `fontrum()` in your root layout**
+**1. Place your font files in `static/fonts/`**
 
-```svelte
-<!-- src/routes/+layout.svelte -->
-<script>
-  import { fontrum } from "@kiiimatz/fontrum";
-
-  fontrum([
-    { class: "inter", font: "/fonts/inter.woff2" },
-  ]);
-</script>
+```
+static/
+└── fonts/
+    └── inter.woff2
 ```
 
-**2. Add the server hook for SSR / SSG**
+**2. Add `createHandle` to `hooks.server.ts`**
 
 ```ts
 // src/hooks.server.ts
-export { handle } from "@kiiimatz/fontrum/hooks";
+import { createHandle } from "@kiiimatz/fontrum/hooks";
+
+export const handle = createHandle([
+  { class: "inter", font: "/fonts/inter.woff2" },
+]);
 ```
 
-**3. Use your font in CSS**
+**3. Use your font in CSS or Tailwind**
 
 ```css
-.inter {
-  font-family: "inter", sans-serif;
-}
+/* CSS */
+.inter { font-family: "inter", sans-serif; }
 ```
-
-**3: 1. Use your font in CSS**
-
-```css
-.inter {
-  font-family: "inter", sans-serif;
-}
-```
-
-**3: 2. Use your font in TailwindCSS**
 
 ```html
+<!-- Tailwind / class -->
 <p class="inter">Hello World!</p>
 ```
 
-That's it. No `{@html}`, no manual `<style>` tags.
+That's it. Works on SSR and SSG with zero flash of unstyled text.
 
 ---
 
@@ -77,72 +66,73 @@ That's it. No `{@html}`, no manual `<style>` tags.
 Omit `class` to apply the font to `body`:
 
 ```ts
-fontrum([
+createHandle([
   { font: "/fonts/inter.woff2" }
-]);
+])
 ```
 
 ### Multiple fonts
 
 ```ts
-fontrum([
+createHandle([
   { class: "inter",   font: "/fonts/inter.woff2" },
   { class: "mono",    font: "/fonts/jetbrains.woff2" },
   { class: "display", font: "/fonts/cal-sans.woff2" },
-]);
+])
 ```
 
 ### Multiple sources (for browser compatibility)
 
 ```ts
-fontrum([
+createHandle([
   {
     class: "inter",
     font: ["/fonts/inter.woff2", "/fonts/inter.woff", "/fonts/inter.ttf"],
   },
-]);
+])
 ```
 
 ### Variable fonts / weights
 
 ```ts
-fontrum([
-  { class: "inter", font: "/fonts/inter-bold.woff2", weight: 700 },
+createHandle([
+  { class: "inter", font: "/fonts/inter-bold.woff2",    weight: 700 },
   { class: "inter", font: "/fonts/inter-regular.woff2", weight: 400 },
-]);
+])
 ```
 
 ### Composing with an existing hook
 
 ```ts
 // src/hooks.server.ts
-import { handle as fontrumHandle } from "@kiiimatz/fontrum/hooks";
+import { createHandle } from "@kiiimatz/fontrum/hooks";
 import { sequence } from "@sveltejs/kit/hooks";
 
-export const handle = sequence(fontrumHandle, myHandle);
+export const handle = sequence(
+  createHandle([{ class: "inter", font: "/fonts/inter.woff2" }]),
+  myHandle
+);
 ```
 
 ---
 
 ## API
 
-### `fontrum(fonts: FontConfig[]): void`
+### `createHandle(fonts: FontConfig[]): Handle`
 
-Registers fonts and injects styles.
-
-- **SSR / SSG** — styles are injected into `<head>` via the server hook.
-- **Browser** — a `<style id="fontrum">` tag is written to `document.head`.
+Creates a SvelteKit `handle` hook that injects font styles into every SSR/SSG response.
+Font CSS is built once at module load time — no timing issues, no FOUT.
 
 ### `FontConfig`
 
-| Property    | Type                      | Default        | Description                                           |
-| ----------- | ------------------------- | -------------- | ----------------------------------------------------- |
-| `font`      | `string \| string[]`      | —              | Path(s) to the font file, relative to `/public`       |
-| `class`     | `string`                  | —              | CSS class name. Omit to apply to `body`               |
-| `weight`    | `string \| number`        | `"normal"`     | Font weight                                           |
-| `style`     | `string`                  | `"normal"`     | Font style                                            |
-| `display`   | `FontDisplay`             | `"swap"`       | `@font-face` font-display value                       |
-| `fallback`  | `string`                  | `"sans-serif"` | Fallback font family                                  |
+| Property   | Type                 | Default        | Description                                     |
+| ---------- | -------------------- | -------------- | ----------------------------------------------- |
+| `font`     | `string \| string[]` | —              | Path(s) to the font file, relative to `/static` |
+| `class`    | `string`             | —              | CSS class name. Omit to apply to `body`         |
+| `weight`   | `string \| number`   | `"normal"`     | Font weight                                     |
+| `style`    | `string`             | `"normal"`     | Font style                                      |
+| `display`  | `FontDisplay`        | `"swap"`       | `@font-face` font-display value                 |
+| `fallback` | `string`             | `"sans-serif"` | Fallback font family                            |
 
 ### Supported formats
 
@@ -152,10 +142,7 @@ Registers fonts and injects styles.
 
 ## How it works
 
-`fontrum()` generates `@font-face` declarations from your config and stores them in memory.
-
-- On the **server**, the `handle` hook intercepts each response and injects the CSS before `</head>`, ensuring zero flash of unstyled text on SSR and SSG pages.
-- In the **browser**, it writes a `<style>` tag on first call and updates it on subsequent calls.
+`createHandle` generates `@font-face` declarations from your config at module load time and stores the CSS in memory. On every request, the `handle` hook injects the CSS and `<link rel="preload">` tags into `<head>` before the response is sent — ensuring fonts are available on the very first render in both SSR and SSG.
 
 ---
 
