@@ -46,7 +46,8 @@ function buildSrc(fonts: string[]): string {
     .join(",\n       ");
 }
 
-function buildCSS(fonts: FontConfig[]): string {
+/** @internal */
+export function buildCSS(fonts: FontConfig[]): string {
   return fonts
     .map((cfg, i) => {
       const family = cfg.class ?? `fontrum-${i}`;
