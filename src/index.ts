@@ -1,27 +1,11 @@
 export type FontDisplay = "auto" | "block" | "swap" | "fallback" | "optional";
 
 export interface FontConfig {
-  /**
-   * CSS class name to apply this font (e.g. "inter").
-   * Omit to apply the font globally to `body`.
-   */
   class?: string;
-  /**
-   * Path(s) to the font file(s). Supports ttf, otf, woff, woff2, eot, svg.
-   * Paths are relative to your public directory (e.g. "/fonts/inter.woff2").
-   * Pass an array to provide multiple sources for the same font.
-   */
   font: string | string[];
-  /** Font weight. Defaults to "normal". */
   weight?: string | number;
-  /** Font style. Defaults to "normal". */
   style?: string;
-  /**
-   * Controls how the font is displayed while loading.
-   * "swap" (default) shows fallback font immediately then swaps.
-   */
   display?: FontDisplay;
-  /** Fallback font families appended after the custom font. Defaults to "sans-serif". */
   fallback?: string;
 }
 
@@ -46,7 +30,6 @@ function buildSrc(fonts: string[]): string {
     .join(",\n       ");
 }
 
-/** @internal */
 export function buildCSS(fonts: FontConfig[]): string {
   return fonts
     .map((cfg, i) => {
@@ -54,7 +37,10 @@ export function buildCSS(fonts: FontConfig[]): string {
       const sources = Array.isArray(cfg.font) ? cfg.font : [cfg.font];
       const weight = cfg.weight ?? "normal";
       const style = cfg.style ?? "normal";
-      const display = cfg.display ?? "swap";
+
+      // 🔥 ここ変更（swap → optional）
+      const display = cfg.display ?? "optional";
+
       const fallback = cfg.fallback ?? "sans-serif";
 
       const face = [
@@ -75,42 +61,17 @@ export function buildCSS(fonts: FontConfig[]): string {
     .join("");
 }
 
-// Module-level stores (font configs are static, same for all requests)
 let _css = "";
 let _fontPaths: string[] = [];
 
-/** @internal Used by hooks.server.ts */
 export function getCSS(): string {
   return _css;
 }
 
-/** @internal Used by hooks.server.ts */
 export function getFontPaths(): string[] {
   return _fontPaths;
 }
 
-/**
- * Register fonts and inject styles automatically.
- *
- * - **SSR / SSG**: add the fontux `handle` hook to `hooks.server.ts` once (see below).
- * - **Browser**: injects a `<style>` tag into `document.head` automatically.
- *
- * Call once in your root `+layout.svelte` — no `{@html}` or `<svelte:head>` needed.
- *
- * @example
- * ```svelte
- * <!-- +layout.svelte -->
- * <script>
- *   import { fontux } from "@kiiimatz/fontux";
- *   fontux([{ class: "inter", font: "/fonts/inter.woff2" }]);
- * </script>
- * ```
- *
- * ```ts
- * // hooks.server.ts
- * export { handle } from "@kiiimatz/fontux/hooks";
- * ```
- */
 export function fontux(fonts: FontConfig[]): void {
   _css = buildCSS(fonts);
   _fontPaths = fonts.flatMap((cfg) =>
