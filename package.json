@@ -1,6 +1,6 @@
 {
   "name": "@kiiimatz/fontux",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "Lightweight font management library for SvelteKit and beyond",
   "type": "module",
   "main": "./dist/index.cjs",
