@@ -39,7 +39,7 @@ export function buildCSS(fonts: FontConfig[]): string {
       const style = cfg.style ?? "normal";
 
       // 🔥 ここ変更（swap → optional）
-      const display = cfg.display ?? "optional";
+      const display = cfg.display ?? "swap";
 
       const fallback = cfg.fallback ?? "sans-serif";
 
