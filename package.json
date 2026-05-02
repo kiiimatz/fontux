@@ -48,6 +48,7 @@
   "author": "kiiimatz",
   "license": "MIT",
   "devDependencies": {
+    "@sveltejs/package": "^2.5.7",
     "tsup": "^8.3.5",
     "typescript": "^5.7.3"
   }
