@@ -1,12 +1,12 @@
 <div align="center">
 
-# fontrum
+# fontux
 
 **Lightweight font management for SvelteKit.**
 
-[![npm](https://img.shields.io/npm/v/@kiiimatz/fontrum?style=flat-square&color=black)](https://www.npmjs.com/package/@kiiimatz/fontrum)
-[![license](https://img.shields.io/npm/l/@kiiimatz/fontrum?style=flat-square&color=black)](./LICENSE)
-[![types](https://img.shields.io/npm/types/@kiiimatz/fontrum?style=flat-square&color=black)](./src/index.ts)
+[![npm](https://img.shields.io/npm/v/@kiiimatz/fontux?style=flat-square&color=black)](https://www.npmjs.com/package/@kiiimatz/fontux)
+[![license](https://img.shields.io/npm/l/@kiiimatz/fontux?style=flat-square&color=black)](./LICENSE)
+[![types](https://img.shields.io/npm/types/@kiiimatz/fontux?style=flat-square&color=black)](./src/index.ts)
 
 Register local fonts and inject `@font-face` styles — no `<svelte:head>`, no manual CSS, no flash of unstyled text.
 
@@ -17,7 +17,7 @@ Register local fonts and inject `@font-face` styles — no `<svelte:head>`, no m
 ## Install
 
 ```bash
-npm install @kiiimatz/fontrum
+npm install @kiiimatz/fontux
 ```
 
 ---
@@ -36,7 +36,7 @@ static/
 
 ```ts
 // src/hooks.server.ts
-import { createHandle } from "@kiiimatz/fontrum/hooks";
+import { createHandle } from "@kiiimatz/fontux/hooks";
 
 export const handle = createHandle([
   { class: "inter", font: "/fonts/inter.woff2" },
@@ -105,7 +105,7 @@ createHandle([
 
 ```ts
 // src/hooks.server.ts
-import { createHandle } from "@kiiimatz/fontrum/hooks";
+import { createHandle } from "@kiiimatz/fontux/hooks";
 import { sequence } from "@sveltejs/kit/hooks";
 
 export const handle = sequence(

@@ -1,5 +1,5 @@
 {
-  "name": "@kiiimatz/fontrum",
+  "name": "@kiiimatz/fontux",
   "version": "0.2.1",
   "description": "Lightweight font management library for SvelteKit and beyond",
   "type": "module",

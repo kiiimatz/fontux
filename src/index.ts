@@ -50,7 +50,7 @@ function buildSrc(fonts: string[]): string {
 export function buildCSS(fonts: FontConfig[]): string {
   return fonts
     .map((cfg, i) => {
-      const family = cfg.class ?? `fontrum-${i}`;
+      const family = cfg.class ?? `fontux-${i}`;
       const sources = Array.isArray(cfg.font) ? cfg.font : [cfg.font];
       const weight = cfg.weight ?? "normal";
       const style = cfg.style ?? "normal";
@@ -92,7 +92,7 @@ export function getFontPaths(): string[] {
 /**
  * Register fonts and inject styles automatically.
  *
- * - **SSR / SSG**: add the fontrum `handle` hook to `hooks.server.ts` once (see below).
+ * - **SSR / SSG**: add the fontux `handle` hook to `hooks.server.ts` once (see below).
  * - **Browser**: injects a `<style>` tag into `document.head` automatically.
  *
  * Call once in your root `+layout.svelte` — no `{@html}` or `<svelte:head>` needed.
@@ -101,24 +101,24 @@ export function getFontPaths(): string[] {
  * ```svelte
  * <!-- +layout.svelte -->
  * <script>
- *   import { fontrum } from "@kiiimatz/fontrum";
- *   fontrum([{ class: "inter", font: "/fonts/inter.woff2" }]);
+ *   import { fontux } from "@kiiimatz/fontux";
+ *   fontux([{ class: "inter", font: "/fonts/inter.woff2" }]);
  * </script>
  * ```
  *
  * ```ts
  * // hooks.server.ts
- * export { handle } from "@kiiimatz/fontrum/hooks";
+ * export { handle } from "@kiiimatz/fontux/hooks";
  * ```
  */
-export function fontrum(fonts: FontConfig[]): void {
+export function fontux(fonts: FontConfig[]): void {
   _css = buildCSS(fonts);
   _fontPaths = fonts.flatMap((cfg) =>
     Array.isArray(cfg.font) ? cfg.font : [cfg.font]
   );
 
   if (typeof document !== "undefined") {
-    const id = "fontrum";
+    const id = "fontux";
     let el = document.getElementById(id) as HTMLStyleElement | null;
     if (!el) {
       el = document.createElement("style");
@@ -129,4 +129,4 @@ export function fontrum(fonts: FontConfig[]): void {
   }
 }
 
-export default fontrum;
+export default fontux;

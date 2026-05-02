@@ -40,7 +40,7 @@ function makePreload(path: string): string {
  * @example
  * ```ts
  * // hooks.server.ts
- * import { createHandle } from "@kiiimatz/fontrum/hooks";
+ * import { createHandle } from "@kiiimatz/fontux/hooks";
  *
  * export const handle = createHandle([
  *   { class: "inter", font: "/fonts/inter.woff2" }
@@ -67,22 +67,22 @@ export function createHandle(fonts: FontConfig[]): Handle {
         const preloads = fontPaths.map(makePreload).join("");
         return html
           .replace(/(<head[^>]*>)/, `$1${preloads}`)
-          .replace("</head>", `<style id="fontrum">${css}</style></head>`);
+          .replace("</head>", `<style id="fontux">${css}</style></head>`);
       },
     });
 }
 
 /**
- * SvelteKit `handle` hook that injects fontrum styles into the SSR/SSG HTML.
+ * SvelteKit `handle` hook that injects fontux styles into the SSR/SSG HTML.
  *
- * **Note:** This requires `fontrum()` to be called in `+layout.svelte` before
+ * **Note:** This requires `fontux()` to be called in `+layout.svelte` before
  * the `<head>` is transformed. If you see a flash of unstyled text, use
  * `createHandle` instead and configure fonts directly in `hooks.server.ts`.
  *
  * @example
  * ```ts
  * // hooks.server.ts
- * export { handle } from "@kiiimatz/fontrum/hooks";
+ * export { handle } from "@kiiimatz/fontux/hooks";
  * ```
  */
 export const handle: Handle = ({ event, resolve }) => {
@@ -95,7 +95,7 @@ export const handle: Handle = ({ event, resolve }) => {
 
       return html
         .replace(/(<head[^>]*>)/, `$1${preloads}`)
-        .replace("</head>", `<style id="fontrum">${css}</style></head>`);
+        .replace("</head>", `<style id="fontux">${css}</style></head>`);
     },
   });
 };
