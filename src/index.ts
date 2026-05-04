@@ -61,33 +61,18 @@ export function buildCSS(fonts: FontConfig[]): string {
     .join("");
 }
 
-let _css = "";
-let _fontPaths: string[] = [];
-
-export function getCSS(): string {
-  return _css;
-}
-
-export function getFontPaths(): string[] {
-  return _fontPaths;
-}
-
 export function fontux(fonts: FontConfig[]): void {
-  _css = buildCSS(fonts);
-  _fontPaths = fonts.flatMap((cfg) =>
-    Array.isArray(cfg.font) ? cfg.font : [cfg.font]
-  );
+  if (typeof document === "undefined") return;
 
-  if (typeof document !== "undefined") {
-    const id = "fontux";
-    let el = document.getElementById(id) as HTMLStyleElement | null;
-    if (!el) {
-      el = document.createElement("style");
-      el.id = id;
-      document.head.appendChild(el);
-    }
-    el.textContent = _css;
+  const css = buildCSS(fonts);
+  const id = "fontux";
+  let el = document.getElementById(id) as HTMLStyleElement | null;
+  if (!el) {
+    el = document.createElement("style");
+    el.id = id;
+    document.head.appendChild(el);
   }
+  el.textContent = css;
 }
 
 export default fontux;

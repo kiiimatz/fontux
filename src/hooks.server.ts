@@ -1,5 +1,5 @@
 import type { FontConfig } from "./index.js";
-import { buildCSS, getCSS, getFontPaths } from "./index.js";
+import { buildCSS } from "./index.js";
 
 const FONT_MIME: Record<string, string> = {
   woff2: "font/woff2",
@@ -50,17 +50,3 @@ export function createHandle(fonts: FontConfig[]): Handle {
     });
 }
 
-export const handle: Handle = ({ event, resolve }) => {
-  return resolve(event, {
-    transformPageChunk: ({ html }) => {
-      const css = getCSS();
-      if (!css) return html;
-
-      const preloads = getFontPaths().map(makePreload).join("");
-
-      return html
-        .replace(/(<head[^>]*>)/, `$1${preloads}`)
-        .replace("</head>", `<style id="fontux">${css}</style></head>`);
-    },
-  });
-};
