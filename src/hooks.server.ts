@@ -27,8 +27,6 @@ function makePreload(path: string): string {
   const ext = path.split("?")[0].split(".").pop()?.toLowerCase() ?? "";
   const type = FONT_MIME[ext];
   const typeAttr = type ? ` type="${type}"` : "";
-
-  // 🔥 ここ変更（fetchpriority追加）
   return `<link rel="preload" href="${path}" as="font"${typeAttr} crossorigin fetchpriority="high">`;
 }
 
@@ -49,4 +47,3 @@ export function createHandle(fonts: FontConfig[]): Handle {
       },
     });
 }
-
